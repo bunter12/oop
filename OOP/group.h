@@ -7,7 +7,7 @@
 
 class GroupSabirzyanov{
 private:
-    std::vector<StudentSabirzyanov> members;
+    std::shared_ptr<std::vector<StudentSabirzyanov>> members = std::make_shared<std::vector<StudentSabirzyanov>>();
 public:
     GroupSabirzyanov();
     ~GroupSabirzyanov();

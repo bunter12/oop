@@ -17,7 +17,6 @@ StudentSabirzyanov::~StudentSabirzyanov(){
     free(surname);
 }
 
-
 StudentSabirzyanov::StudentSabirzyanov(const StudentSabirzyanov& other) {
     name = nullptr;
     surname = nullptr;
