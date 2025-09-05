@@ -10,8 +10,9 @@ private:
     int age;
 public:
     StudentSabirzyanov();
+    StudentSabirzyanov(const StudentSabirzyanov& other);
     StudentSabirzyanov(char * p_name, char * p_surname, int p_age);
-//    ~StudentSabirzyanov();
+    ~StudentSabirzyanov();
     
     void setName(char* p_name);
     void setSurname(char* p_surname);

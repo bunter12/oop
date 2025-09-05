@@ -12,10 +12,25 @@ StudentSabirzyanov::StudentSabirzyanov(char * p_name, char * p_surname, int p_ag
     strcpy(surname,p_surname);
 }
 
-//StudentSabirzyanov::~StudentSabirzyanov(){
-//    free(name);
-//    free(surname);
-//}
+StudentSabirzyanov::~StudentSabirzyanov(){
+    free(name);
+    free(surname);
+}
+
+
+StudentSabirzyanov::StudentSabirzyanov(const StudentSabirzyanov& other) {
+    name = nullptr;
+    surname = nullptr;
+
+    if (other.name != nullptr)
+        name = strdup(other.name);
+
+    if (other.surname != nullptr)
+        surname = strdup(other.surname);
+        
+    if (other.age)
+        age = other.age;
+}
 
 char* StudentSabirzyanov::getName(){
     return name;
@@ -56,6 +71,8 @@ std::ostream& operator<<(std::ostream& stream, StudentSabirzyanov& student){
     }
     return stream;
 }
+
+
 
 std::istream& operator>>(std::istream& stream, StudentSabirzyanov& student){
     char p_name[100];
