@@ -1,102 +1,58 @@
-#include "student.h"
-#include <cstring>
-#include <stdlib.h>
-#include <typeinfo>
-#include <fstream>
+#include "student.hpp"
+#include <iostream>
+#include <string>
+#include <codecvt>
+#include <locale>
+#include <limits>
 
-StudentSabirzyanov::StudentSabirzyanov(char * p_name, char * p_surname, int p_age){
-    age = p_age;
-    name = (char *) malloc(sizeof(char) * strlen(p_name));
-    surname = (char *) malloc(sizeof(char) * strlen(p_surname));
-    strcpy(name,p_name);
-    strcpy(surname,p_surname);
+StudentSabirzyanov::StudentSabirzyanov() : age(0) {}
+
+static std::wstring utf8_to_wstring(const std::string& str) {
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
+    return conv.from_bytes(str);
+}
+static std::string wstring_to_utf8(const std::wstring& wstr) {
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
+    return conv.to_bytes(wstr);
 }
 
-StudentSabirzyanov::~StudentSabirzyanov(){
-    free(name);
-    free(surname);
-}
+void StudentSabirzyanov::readFromConsole() {
+    std::string input;
 
+    std::cout << "Введите имя студента: ";
+    std::getline(std::cin, input);
+    name = utf8_to_wstring(input);
 
-StudentSabirzyanov::StudentSabirzyanov(const StudentSabirzyanov& other) {
-    name = nullptr;
-    surname = nullptr;
-
-    if (other.name != nullptr)
-        name = strdup(other.name);
-
-    if (other.surname != nullptr)
-        surname = strdup(other.surname);
-        
-    if (other.age)
-        age = other.age;
-}
-
-char* StudentSabirzyanov::getName(){
-    return name;
-}
-
-char* StudentSabirzyanov::getSurname(){
-    return surname;
-}
-
-void StudentSabirzyanov::setSurname(char * p_surname){
-    if(surname!=nullptr){
-        free(surname);
+    std::cout << "Введите возраст студента: ";
+    std::getline(std::cin, input);
+    try {
+        age = std::stoi(input);
+    } catch (...) {
+        std::cerr << "Ошибка: некорректный возраст. Установлено значение 0." << std::endl;
+        age = 0;
     }
-    surname = (char *) malloc(sizeof(char) * strlen(p_surname));
-    strcpy(surname,p_surname);
+
+    std::cout << "Введите специальность: ";
+    std::getline(std::cin, input);
+    specialty = utf8_to_wstring(input);
 }
 
-void StudentSabirzyanov::setName(char * p_name){
-    if(name!=nullptr){
-        free(name);
-    }
-    name = (char *) malloc(sizeof(char) * strlen(p_name));
-    strcpy(name,p_name);
+void StudentSabirzyanov::printToConsole() const {
+    std::cout << "Имя: " << wstring_to_utf8(name)
+              << ", Возраст: " << age
+              << ", Специальность: " << wstring_to_utf8(specialty)
+              << std::endl;
 }
 
-
-std::ostream& operator<<(std::ostream& stream, StudentSabirzyanov& student){
-    
-    if (dynamic_cast<std::ofstream*>(&stream)){
-        stream<<student.getName()<<"\n";
-        stream<<student.getSurname()<<"\n";
-        stream<<student.getAge()<<"\n";
-    }
-    else{
-        stream<<"Name: "<<student.getName()<<" \n";
-        stream<<"Surname: "<<student.getSurname()<<" \n";
-        stream<<"Age: "<<student.getAge()<<" \n";
-    }
-    return stream;
+void StudentSabirzyanov::readFromFile(std::wifstream& fin) {
+    std::getline(fin, name);
+    fin >> age;
+    fin.ignore(std::numeric_limits<std::streamsize>::max(), L'\n');
+    std::getline(fin, specialty);
 }
 
-
-
-std::istream& operator>>(std::istream& stream, StudentSabirzyanov& student){
-    char p_name[100];
-    char p_surname[100];
-    int p_age;
-    
-    stream>>p_name;
-    stream>>p_surname;
-    stream>>p_age;
-    
-    student.setName(p_name);
-    student.setSurname(p_surname);
-    student.setAge(p_age);
-    
-    return stream;
-}
-
-void StudentSabirzyanov::setAge(int p_age){
-    age=p_age;
-}
-
-int StudentSabirzyanov::getAge(){
-    return age;
-}
-
-StudentSabirzyanov::StudentSabirzyanov(){
+void StudentSabirzyanov::writeToFile(std::wofstream& fout) const {
+    fout << name << std::endl;
+    fout << age << std::endl;
+    fout << specialty << std::endl;
 }
